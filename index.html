@@ -35,15 +35,16 @@
 
         .logo-section {
             text-align: center;
-            margin-bottom: 40px;
+            margin: -40px -40px 30px -40px; /* banner pleine largeur du conteneur */
         }
 
         .logo {
-            max-width: 200px;
-            max-height: 80px;
-            margin: 0 auto;
+            width: 100%;
+            height: auto;
             display: block;
-            filter: brightness(0.9);
+            filter: brightness(0.95);
+            border-top-left-radius: 12px;
+            border-top-right-radius: 12px;
         }
 
         h1 {
@@ -187,49 +188,6 @@
             font-size: 0.9em;
         }
 
-        /* Styles pour les onglets */
-        .tabs {
-            display: flex;
-            margin-bottom: 30px;
-            border-bottom: 1px solid #2a2a2a;
-            background: #1a1a1a;
-            border-radius: 8px 8px 0 0;
-            overflow: hidden;
-        }
-
-        .tab-button {
-            background: none;
-            border: none;
-            padding: 16px 24px;
-            cursor: pointer;
-            font-size: 0.95em;
-            font-weight: 500;
-            color: #666;
-            transition: all 0.2s ease;
-            flex: 1;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .tab-button:hover {
-            color: #b3b3b3;
-            background: #222222;
-        }
-
-        .tab-button.active {
-            color: #4a9eff;
-            background: #111111;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-            animation: fadeIn 0.5s ease;
-        }
-
         select option {
             background: #1a1a1a;
             color: #ffffff;
@@ -248,20 +206,6 @@
                 font-size: 2em;
             }
 
-            .tabs {
-                flex-direction: column;
-            }
-
-            .tab-button {
-                text-align: center;
-                border-bottom: 1px solid #e1e5e9;
-                border-right: none;
-            }
-
-            .tab-button.active {
-                border-bottom-color: #667eea;
-                border-right: none;
-            }
         }
     </style>
 </head>
@@ -351,45 +295,14 @@
             </form>
 
             <div class="formula">
-                <strong>Formule GSD (Ground Sample Distance) :</strong><br>
-                GSD (cm) = (Distance par rapport à l'objet (cm) × Taille de pixel capteur (mm/px)) / Distance focale (mm)<br>
-                GSD (m) = GSD (cm) / 100<br>
-                Taille de pixel capteur (mm) = Taille capteur (mm) / Résolution (px)
+                <strong>GSD (Ground Sample Distance) :</strong><br>
+                GSD en mm/px calculé automatiquement à partir du capteur, de la focale, de la distance et de la résolution.
             </div>
 
             <div id="photogrammetrieResults" class="results">
-                <h3 style="margin-bottom: 20px; color: #ffffff;">Résultats</h3>
-                <div class="result-item">
-                    <span class="result-label">Capteur sélectionné</span>
-                    <span class="result-value" id="resultSensor">-</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Distance focale (mm)</span>
-                    <span class="result-value" id="resultFocal">-</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Distance par rapport à l'objet (cm)</span>
-                    <span class="result-value" id="resultAltitude">-</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Résolution (px)</span>
-                    <span class="result-value" id="resultResolution">-</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Taille de pixel capteur (mm)</span>
-                    <span class="result-value" id="resultPixelSensor">-</span>
-                </div>
-                <div class="result-item" style="border-bottom: 2px solid #2a2a2a;">
-                    <span class="result-label">GSD (cm/px)</span>
-                    <span class="result-value" id="resultPixelGroundCm" style="font-size:1.2em;color:#7ab0ff;">-</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">GSD (m/px)</span>
-                    <span class="result-value" id="resultPixelGroundM">-</span>
-                </div>
-                <div class="result-item">
-                    <span class="result-label">Couverture au sol (m)</span>
-                    <span class="result-value" id="resultCoverage">-</span>
+                <h3 style="margin-bottom: 10px; color: #ffffff;">GSD principal</h3>
+                <div class="result-item" style="border-bottom: none; justify-content: center;">
+                    <span class="result-value" id="resultGsdMm" style="font-size:2.0em;color:#7ab0ff;">- mm/px</span>
                 </div>
             </div>
         </div>
@@ -444,24 +357,22 @@
         // Calcul en direct
         function calculate() {
             const capteurType = document.getElementById('capteur').value;
-            const focalLength = parseFloat(document.getElementById('focalLength').value);
-            const altitude = parseFloat(document.getElementById('altitude').value); // en cm
+            const focalLength = parseFloat(document.getElementById('focalLength').value); // mm
+            const altitudeCm = parseFloat(document.getElementById('altitude').value); // cm
             const megapixels = document.getElementById('megapixels').value;
 
-            if (!capteurType || isNaN(focalLength) || isNaN(altitude) || !megapixels) return;
-            if (focalLength <= 0 || altitude <= 0) return;
+            if (!capteurType || isNaN(focalLength) || isNaN(altitudeCm) || !megapixels) return;
+            if (focalLength <= 0 || altitudeCm <= 0) return;
 
-            let sensorWidth, sensorHeight, sensorName;
+            let sensorWidth, sensorHeight;
             if (capteurType === 'custom') {
                 sensorWidth = parseFloat(document.getElementById('sensorWidth').value);
                 sensorHeight = parseFloat(document.getElementById('sensorHeight').value);
                 if (isNaN(sensorWidth) || isNaN(sensorHeight) || sensorWidth <= 0 || sensorHeight <= 0) return;
-                sensorName = `Personnalisé (${sensorWidth}×${sensorHeight} mm)`;
             } else {
                 const sensor = sensors[capteurType];
                 sensorWidth = sensor.width;
                 sensorHeight = sensor.height;
-                sensorName = sensor.name;
             }
 
             let resolutionX, resolutionY;
@@ -477,24 +388,15 @@
 
             const pixelSizeSensorX = sensorWidth / resolutionX; // mm/px
             const pixelSizeSensorY = sensorHeight / resolutionY; // mm/px
-            const pixelSizeSensor = (pixelSizeSensorX + pixelSizeSensorY) / 2;
+            const pixelSizeSensor = (pixelSizeSensorX + pixelSizeSensorY) / 2; // mm/px
 
-            const pixelSizeGroundCm = (altitude * pixelSizeSensor) / focalLength; // cm/px (altitude en cm)
-            const pixelSizeGroundM = pixelSizeGroundCm / 100; // m/px
+            const altitudeMm = altitudeCm * 10; // cm -> mm
+            const gsdMmPerPx = (altitudeMm * pixelSizeSensor) / focalLength; // mm/px
 
-            const altitudeM = altitude / 100; // convertir cm -> m
-            const coverageX = (altitudeM * sensorWidth) / focalLength; // m
-            const coverageY = (altitudeM * sensorHeight) / focalLength; // m
-            const coverage = `${coverageX.toFixed(1)} × ${coverageY.toFixed(1)}`;
-
-            document.getElementById('resultSensor').textContent = sensorName;
-            document.getElementById('resultFocal').textContent = isFinite(focalLength) ? focalLength : '-';
-            document.getElementById('resultAltitude').textContent = isFinite(altitude) ? altitude : '-';
-            document.getElementById('resultResolution').textContent = `${resolutionX} × ${resolutionY}`;
-            document.getElementById('resultPixelSensor').textContent = pixelSizeSensor.toFixed(6);
-            document.getElementById('resultPixelGroundCm').textContent = pixelSizeGroundCm.toFixed(6);
-            document.getElementById('resultPixelGroundM').textContent = pixelSizeGroundM.toFixed(6);
-            document.getElementById('resultCoverage').textContent = coverage;
+            const gsdElement = document.getElementById('resultGsdMm');
+            if (gsdElement) {
+                gsdElement.textContent = `${gsdMmPerPx.toFixed(3)} mm/px`;
+            }
 
             document.getElementById('photogrammetrieResults').classList.add('show');
         }
