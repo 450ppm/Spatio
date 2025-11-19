@@ -1,35 +1,43 @@
 ![PixelSize](./spatio_logo.png)
 
-🧮 Spatio · Calculateur de Taille de Pixel
+🧮 Spatio – Calculateur instantané de GSD pour la photogrammétrie
 
-PixelSize est une petite application web permettant de calculer la taille de pixel nécessaire à la réalisation d’une orthovue à partir de la résolution (DPI) et de l’échelle souhaitée.
+Spatio est un outil ultra-simple conçu pour les projets de photogrammétrie. Il calcule automatiquement la GSD (Ground Sample Distance) en fonction de votre objectif, du capteur, de la distance sujet-caméra et de la résolution d’image.
 
-Elle est pensée pour les architectes, géomaticiens et spécialistes du relevé 3D qui souhaitent rapidement déterminer la résolution optimale d’une image orthographique en fonction de son usage final (plans, photogrammétrie, documentation patrimoniale, etc.).
+Comment ça marche ?
 
-🚀 Fonctionnalités
+Choisissez votre capteur (ex. Full Frame 36×24 mm)
 
-Calcul de la taille de pixel en cm et en mètre
+Entrez la focale de votre objectif (mm)
 
-Affichage de la formule utilisée pour transparence et vérification
+Indiquez la distance entre la caméra et l’objet (cm)
 
-Préremplissage automatique des valeurs usuelles (150 DPI, échelle 1/20)
+Sélectionnez la résolution d’image (en mégapixels ou dimensions X/Y)
 
-Résultats arrondis à 6 décimales pour une précision fine
-​
+Les résultats se mettent à jour en temps réel, sans clic supplémentaire.
 
-🛠️ Utilisation
+🚀 Ce que Spatio calcule
 
-Saisissez la résolution en DPI et l’échelle souhaitée (1/X).
+GSD en mm/px
+Déterminé automatiquement à partir :
 
-Cliquez sur Calculer la Taille de Pixel.
+de la taille du capteur
 
-Les résultats s’affichent instantanément avec le détail du calcul.
+de la focale
+
+de la distance au sujet
+
+de la résolution de l'image
+
+Exemple :
+Avec un capteur Full Frame, une focale 50 mm, une distance de 10 m et une image 24 MP (6000×4000), Spatio vous indique :
+➡️ GSD : 12.000 mm/px
 
 🌐 Démo en ligne
 
 👉 Ouvrir l’application
 
-[![Ouvrir l'app](https://img.shields.io/badge/Ouvrir%20l%27app-PixelSize-blue)](https://450ppm.github.io/Spatio/)
+[![Ouvrir l'app](https://img.shields.io/badge/Ouvrir%20l%27app-Spatio-blue)](https://450ppm.github.io/Spatio/)
 
 📂 Technologies
 
