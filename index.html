@@ -268,16 +268,15 @@
 <body>
     <div class="container">
         <div class="logo-section">
-            <img src="121_50_web.png" alt="450ppm Logo" class="logo">
+            <img src="spatio_logo.png" alt="Spatio" class="logo">
         </div>
         
-        <h1>Spatio — Calculateur Photogrammétrie (GSD)</h1>
         <p style="text-align: center; color: #666; margin-bottom: 30px; font-size: 0.9em;">Encodez objectif, capteur, distance — résultats en direct</p>
         
         <!-- Photogrammétrie (unique outil) -->
         <div id="photogrammetrie">
             <div class="info">
-                <strong>Étapes :</strong> 1) Choisir le capteur  2) Saisir la focale (mm)  3) Saisir la distance (m)  4) Choisir la résolution (MP ou X/Y). Les résultats se mettent à jour automatiquement.
+                <strong>Étapes :</strong> 1) Choisir le capteur  2) Saisir la focale (mm)  3) Saisir la distance par rapport à l'objet (cm)  4) Choisir la résolution (MP ou X/Y). Les résultats se mettent à jour automatiquement.
             </div>
 
             <form id="photogrammetrieCalculator">
@@ -313,8 +312,8 @@
                         <input type="number" id="focalLength" name="focalLength" placeholder="Ex: 50" min="1" step="0.1" required>
                     </div>
                     <div class="form-group">
-                        <label for="altitude">Distance au sol (m)</label>
-                        <input type="number" id="altitude" name="altitude" placeholder="Ex: 100" min="0.1" step="0.1" required>
+                        <label for="altitude">Distance par rapport à l'objet (cm)</label>
+                        <input type="number" id="altitude" name="altitude" placeholder="Ex: 10000" min="1" step="1" required>
                     </div>
                 </div>
 
@@ -353,7 +352,8 @@
 
             <div class="formula">
                 <strong>Formule GSD (Ground Sample Distance) :</strong><br>
-                GSD (m) = (Distance au sol × Taille de pixel capteur) / Distance focale<br>
+                GSD (cm) = (Distance par rapport à l'objet (cm) × Taille de pixel capteur (mm/px)) / Distance focale (mm)<br>
+                GSD (m) = GSD (cm) / 100<br>
                 Taille de pixel capteur (mm) = Taille capteur (mm) / Résolution (px)
             </div>
 
@@ -368,7 +368,7 @@
                     <span class="result-value" id="resultFocal">-</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Distance au sol (m)</span>
+                    <span class="result-label">Distance par rapport à l'objet (cm)</span>
                     <span class="result-value" id="resultAltitude">-</span>
                 </div>
                 <div class="result-item">
@@ -445,7 +445,7 @@
         function calculate() {
             const capteurType = document.getElementById('capteur').value;
             const focalLength = parseFloat(document.getElementById('focalLength').value);
-            const altitude = parseFloat(document.getElementById('altitude').value);
+            const altitude = parseFloat(document.getElementById('altitude').value); // en cm
             const megapixels = document.getElementById('megapixels').value;
 
             if (!capteurType || isNaN(focalLength) || isNaN(altitude) || !megapixels) return;
@@ -479,11 +479,12 @@
             const pixelSizeSensorY = sensorHeight / resolutionY; // mm/px
             const pixelSizeSensor = (pixelSizeSensorX + pixelSizeSensorY) / 2;
 
-            const pixelSizeGroundM = (altitude * pixelSizeSensor) / focalLength; // m/px
-            const pixelSizeGroundCm = pixelSizeGroundM * 100; // cm/px
+            const pixelSizeGroundCm = (altitude * pixelSizeSensor) / focalLength; // cm/px (altitude en cm)
+            const pixelSizeGroundM = pixelSizeGroundCm / 100; // m/px
 
-            const coverageX = (altitude * sensorWidth) / focalLength; // m
-            const coverageY = (altitude * sensorHeight) / focalLength; // m
+            const altitudeM = altitude / 100; // convertir cm -> m
+            const coverageX = (altitudeM * sensorWidth) / focalLength; // m
+            const coverageY = (altitudeM * sensorHeight) / focalLength; // m
             const coverage = `${coverageX.toFixed(1)} × ${coverageY.toFixed(1)}`;
 
             document.getElementById('resultSensor').textContent = sensorName;
@@ -510,7 +511,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('capteur').value = 'fullframe';
             document.getElementById('focalLength').value = '50';
-            document.getElementById('altitude').value = '100';
+            document.getElementById('altitude').value = '10000';
             document.getElementById('megapixels').value = '24';
             calculate();
         });
