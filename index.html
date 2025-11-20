@@ -304,6 +304,30 @@
                 <div class="result-item" style="border-bottom: none; justify-content: center;">
                     <span class="result-value" id="resultGsdMm" style="font-size:2.0em;color:#7ab0ff;">- mm/px</span>
                 </div>
+
+                <h3 style="margin: 20px 0 8px; color: #ffffff;">Emprise au sol</h3>
+                <div class="result-item">
+                    <span class="result-label">Largeur au sol (cm)</span>
+                    <span class="result-value" id="resultWidthCm">- cm</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Hauteur au sol (cm)</span>
+                    <span class="result-value" id="resultHeightCm">- cm</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Surface couverte (cm²)</span>
+                    <span class="result-value" id="resultAreaCm2">- cm²</span>
+                </div>
+
+                <h3 style="margin: 20px 0 8px; color: #ffffff;">Décalage pour 65% de recouvrement</h3>
+                <div class="result-item">
+                    <span class="result-label">Décalage horizontal (cm)</span>
+                    <span class="result-value" id="resultOffsetXcm">- cm</span>
+                </div>
+                <div class="result-item">
+                    <span class="result-label">Décalage vertical (cm)</span>
+                    <span class="result-value" id="resultOffsetYcm">- cm</span>
+                </div>
             </div>
         </div>
     </div>
@@ -397,6 +421,30 @@
             if (gsdElement) {
                 gsdElement.textContent = `${gsdMmPerPx.toFixed(3)} mm/px`;
             }
+
+            // Dimensions au sol (à partir du GSD)
+            const groundWidthMm = resolutionX * gsdMmPerPx;
+            const groundHeightMm = resolutionY * gsdMmPerPx;
+            const groundWidthCm = groundWidthMm / 10;  // mm -> cm
+            const groundHeightCm = groundHeightMm / 10; // mm -> cm
+            const groundAreaCm2 = groundWidthCm * groundHeightCm;
+
+            const widthEl = document.getElementById('resultWidthCm');
+            const heightEl = document.getElementById('resultHeightCm');
+            const areaEl = document.getElementById('resultAreaCm2');
+            if (widthEl) widthEl.textContent = `${groundWidthCm.toFixed(1)} cm`;
+            if (heightEl) heightEl.textContent = `${groundHeightCm.toFixed(1)} cm`;
+            if (areaEl) areaEl.textContent = `${groundAreaCm2.toFixed(0)} cm²`;
+
+            // Décalages pour un recouvrement de 65%
+            const overlap = 0.65;
+            const stepXcm = groundWidthCm * (1 - overlap);
+            const stepYcm = groundHeightCm * (1 - overlap);
+
+            const offsetXEl = document.getElementById('resultOffsetXcm');
+            const offsetYEl = document.getElementById('resultOffsetYcm');
+            if (offsetXEl) offsetXEl.textContent = `${stepXcm.toFixed(1)} cm`;
+            if (offsetYEl) offsetYEl.textContent = `${stepYcm.toFixed(1)} cm`;
 
             document.getElementById('photogrammetrieResults').classList.add('show');
         }
