@@ -257,7 +257,7 @@
                     </div>
                     <div class="form-group">
                         <label for="altitude">Distance par rapport à l'objet (cm)</label>
-                        <input type="number" id="altitude" name="altitude" placeholder="Ex: 10000" min="1" step="1" required>
+                        <input type="number" id="altitude" name="altitude" placeholder="Ex: 300" min="1" step="1" required>
                     </div>
                 </div>
 
@@ -305,17 +305,17 @@
                     <span class="result-value" id="resultGsdMm" style="font-size:2.0em;color:#7ab0ff;">- mm/px</span>
                 </div>
 
-                <h3 style="margin: 20px 0 8px; color: #ffffff;">Emprise au sol</h3>
+                <h3 style="margin: 20px 0 8px; color: #ffffff;">Emprise</h3>
                 <div class="result-item">
-                    <span class="result-label">Largeur au sol (cm)</span>
+                    <span class="result-label">Largeur (cm)</span>
                     <span class="result-value" id="resultWidthCm">- cm</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Hauteur au sol (cm)</span>
+                    <span class="result-label">Hauteur (cm)</span>
                     <span class="result-value" id="resultHeightCm">- cm</span>
                 </div>
                 <div class="result-item">
-                    <span class="result-label">Surface couverte (cm²)</span>
+                    <span class="result-label">Surface (cm²)</span>
                     <span class="result-value" id="resultAreaCm2">- cm²</span>
                 </div>
 
@@ -461,7 +461,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('capteur').value = 'fullframe';
             document.getElementById('focalLength').value = '50';
-            document.getElementById('altitude').value = '10000';
+            document.getElementById('altitude').value = '300';
             document.getElementById('megapixels').value = '24';
             calculate();
         });
