@@ -1,6 +1,6 @@
 🧮 Calculateur instantané de GSD pour la photogrammétrie
 
-PIXX est un outil ultra-simple conçu pour les projets de photogrammétrie. Il calcule automatiquement la GSD (Ground Sample Distance) en fonction de votre objectif, du capteur, de la distance sujet-caméra et de la résolution d’image.
+DPIX est un outil ultra-simple conçu pour les projets de photogrammétrie. Il calcule automatiquement la GSD (Ground Sample Distance) en fonction de votre objectif, du capteur, de la distance sujet-caméra et de la résolution d’image.
 
 Comment ça marche ?
 
